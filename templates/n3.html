@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                var answer = 0;
+
+            function get_question() {
+                $.get('/question/3', function(data){
+                    $("#question").text(data['question']);
+                    answer = data['answer'];
+                    for (var i = 0; i < data['options'].length; i++) {
+                        $("#options").append("<li><button class='opt' value='"+data['options'][i]['id']+"'>" + data['options'][i]['option'] + '</button></li>');
+                    }
+                $("#options .opt").on('click', function(){
+                    console.log($(this).val());
+                    if ($(this).val() == answer){
+                        alert('ok');
+                        $("#options").html("");
+                        $("#reason").text("");
+                        get_question();
+                    }  else {
+                        $("#reason").text(data["reason"]);
+                        $("#next").css("display", "block");
+                    }
+                });
+
+                });
+            }
+            $("#next").on('click', function(){
+                $("#options").html("");
+                $("#reason").text("");
+                $("#next").css("display", "none");
+                get_question();
+            });
+            get_question();
+
+
+            });
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <p id="question"/>
+            <ul id="options">
+            </ul>
+            <button id="next" style="display:none">Next</button>
+            <div id="reason"/>
+        </div>
+    </body>
+</html>
